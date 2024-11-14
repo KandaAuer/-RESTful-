@@ -1,13 +1,26 @@
 package com.example.myproject.model;
 
-public class Faculty {
-    private Long id;
-    private String name;
-    private String color;
+import jakarta.persistence.*;
+import java.util.List;
 
-    // Конструктор
-    public Faculty(Long id, String name, String color) {
-        this.id = id;
+@Entity
+public class Faculty {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;   // Название факультета
+    private String color;  // Цвет факультета
+
+    @OneToMany(mappedBy = "faculty", fetch = FetchType.LAZY)
+    private List<Student> students; // Список студентов, относящихся к этому факультету
+
+    // Конструктор по умолчанию
+    public Faculty() {}
+
+    // Конструктор с параметрами
+    public Faculty(String name, String color) {
         this.name = name;
         this.color = color;
     }
@@ -35,5 +48,13 @@ public class Faculty {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
     }
 }

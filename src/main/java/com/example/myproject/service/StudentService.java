@@ -1,50 +1,40 @@
 package com.example.myproject.service;
 
 import com.example.myproject.model.Student;
+import com.example.myproject.repository.StudentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
+@Service
 public class StudentService {
-    private Map<Long, Student> studentMap = new HashMap<>();
-    private Long idCounter = 1L;
 
-    // CRUD-операции
+    @Autowired
+    private StudentRepository studentRepository;
 
-    public Student createStudent(String name, int age) {
-        Student student = new Student(idCounter++, name, age);
-        studentMap.put(student.getId(), student);
-        return student;
+    // Получить студентов по возрасту в пределах диапазона
+    public List<Student> getStudentsByAgeRange(int minAge, int maxAge) {
+        return studentRepository.findByAgeBetween(minAge, maxAge);
     }
 
-    public Student getStudent(Long id) {
-        return studentMap.get(id);
+    // Получить студентов, чье имя содержит букву
+    public List<Student> getStudentsByNameContaining(String letter) {
+        return studentRepository.findByNameContainingIgnoreCase(letter);
     }
 
-    public Student updateStudent(Long id, String name, int age) {
-        Student student = studentMap.get(id);
-        if (student != null) {
-            student.setName(name);
-            student.setAge(age);
-        }
-        return student;
+    // Получить студентов, чей возраст меньше их ID
+    public List<Student> getStudentsByAgeLessThanId(Long id) {
+        return studentRepository.findByAgeLessThan(id);
     }
 
-    public void deleteStudent(Long id) {
-        studentMap.remove(id);
+    // Получить студентов, отсортированных по возрасту
+    public List<Student> getStudentsSortedByAge() {
+        return studentRepository.findAllByOrderByAgeAsc();
     }
 
-    public Map<Long, Student> getAllStudents() {
-        return studentMap;
-    }
-
-    public Map<Long, Student> filterStudentsByAge(int age) {
-        Map<Long, Student> filtered = new HashMap<>();
-        for (Student student : studentMap.values()) {
-            if (student.getAge() == age) {
-                filtered.put(student.getId(), student);
-            }
-        }
-        return filtered;
+    // Получить студентов по ID факультета
+    public List<Student> getStudentsByFacultyId(Long facultyId) {
+        return studentRepository.findByFacultyId(facultyId);
     }
 }

@@ -2,49 +2,45 @@ package com.example.myproject.controller;
 
 import com.example.myproject.model.Student;
 import com.example.myproject.service.StudentService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import java.util.List;
 
 @RestController
-@RequestMapping("/student")
+@RequestMapping("/students")
 public class StudentController {
 
-    private final StudentService studentService = new StudentService();
+    @Autowired
+    private StudentService studentService;
 
-    // СОЗДАВАТЬ
-    @PostMapping
-    public Student createStudent(@RequestParam String name, @RequestParam int age) {
-        return studentService.createStudent(name, age);
+    // Эндпоинт для получения студентов по возрасту в пределах диапазона
+    @GetMapping("/age")
+    public List<Student> getStudentsByAgeRange(@RequestParam int minAge, @RequestParam int maxAge) {
+        return studentService.getStudentsByAgeRange(minAge, maxAge);
     }
 
-    // ЧИТАТЬ
-    @GetMapping("/{id}")
-    public Student getStudent(@PathVariable Long id) {
-        return studentService.getStudent(id);
+    // Эндпоинт для получения студентов по букве в имени
+    @GetMapping("/name")
+    public List<Student> getStudentsByNameContaining(@RequestParam String letter) {
+        return studentService.getStudentsByNameContaining(letter);
     }
 
-    // ОБНОВЛЯТЬ
-    @PutMapping("/{id}")
-    public Student updateStudent(@PathVariable Long id, @RequestParam String name, @RequestParam int age) {
-        return studentService.updateStudent(id, name, age);
+    // Эндпоинт для получения студентов, чей возраст меньше их ID
+    @GetMapping("/age-less-than-id/{id}")
+    public List<Student> getStudentsByAgeLessThanId(@PathVariable Long id) {
+        return studentService.getStudentsByAgeLessThanId(id);
     }
 
-    // УДАЛИТЬ
-    @DeleteMapping("/{id}")
-    public void deleteStudent(@PathVariable Long id) {
-        studentService.deleteStudent(id);
+    // Эндпоинт для получения студентов, отсортированных по возрасту
+    @GetMapping("/sorted-by-age")
+    public List<Student> getStudentsSortedByAge() {
+        return studentService.getStudentsSortedByAge();
     }
 
-    // ФИЛЬТРАТЬ по возрасту
-    @GetMapping("/filter")
-    public Map<Long, Student> filterStudents(@RequestParam int age) {
-        return studentService.filterStudentsByAge(age);
-    }
-
-    // ПОЛУЧИТЬ ВСЕ
-    @GetMapping
-    public Map<Long, Student> getAllStudents() {
-        return studentService.getAllStudents();
+    // Эндпоинт для получения студентов по факультету
+    @GetMapping("/faculty/{facultyId}")
+    public List<Student> getStudentsByFacultyId(@PathVariable Long facultyId) {
+        return studentService.getStudentsByFacultyId(facultyId);
     }
 }
