@@ -6,44 +6,35 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class StudentService {
-    private final StudentRepository studentRepository;
 
     @Autowired
-    public StudentService(StudentRepository studentRepository) {
-        this.studentRepository = studentRepository;
+    private StudentRepository studentRepository;
+
+    // Получить студентов по возрасту в пределах диапазона
+    public List<Student> getStudentsByAgeRange(int minAge, int maxAge) {
+        return studentRepository.findByAgeBetween(minAge, maxAge);
     }
 
-    public Student createStudent(String name, int age) {
-        Student student = new Student();
-        student.setName(name);
-        student.setAge(age);
-        return studentRepository.save(student);
+    // Получить студентов, чье имя содержит букву
+    public List<Student> getStudentsByNameContaining(String letter) {
+        return studentRepository.findByNameContainingIgnoreCase(letter);
     }
 
-    public Optional<Student> getStudent(Long id) {
-        return studentRepository.findById(id);
+    // Получить студентов, чей возраст меньше их ID
+    public List<Student> getStudentsByAgeLessThanId(Long id) {
+        return studentRepository.findByAgeLessThan(id);
     }
 
-    public Student updateStudent(Long id, String name, int age) {
-        Student student = studentRepository.findById(id).orElseThrow();
-        student.setName(name);
-        student.setAge(age);
-        return studentRepository.save(student);
+    // Получить студентов, отсортированных по возрасту
+    public List<Student> getStudentsSortedByAge() {
+        return studentRepository.findAllByOrderByAgeAsc();
     }
 
-    public void deleteStudent(Long id) {
-        studentRepository.deleteById(id);
-    }
-
-    public List<Student> getAllStudents() {
-        return studentRepository.findAll();
-    }
-
-    public List<Student> filterStudentsByAge(int age) {
-        return studentRepository.findByAge(age);
+    // Получить студентов по ID факультета
+    public List<Student> getStudentsByFacultyId(Long facultyId) {
+        return studentRepository.findByFacultyId(facultyId);
     }
 }

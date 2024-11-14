@@ -1,27 +1,32 @@
 package com.example.myproject.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Student {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name;
-    private int age;
+    private Long id;  // Идентификатор студента
 
-    // Конструктор, геттеры и сеттеры
+    private String name;  // Имя студента
+    private int age;      // Возраст студента
+
+    @ManyToOne
+    @JoinColumn(name = "faculty_id")  // Связь ManyToOne с факультетом
+    private Faculty faculty;  // Ссылка на факультет, к которому принадлежит студент
+
+    // Конструктор по умолчанию
     public Student() {}
 
-    public Student(Long id, String name, int age) {
-        this.id = id;
+    // Конструктор с параметрами
+    public Student(String name, int age, Faculty faculty) {
         this.name = name;
         this.age = age;
+        this.faculty = faculty;
     }
 
+    // Геттеры и сеттеры
     public Long getId() {
         return id;
     }
@@ -44,5 +49,13 @@ public class Student {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public Faculty getFaculty() {
+        return faculty;
+    }
+
+    public void setFaculty(Faculty faculty) {
+        this.faculty = faculty;
     }
 }
