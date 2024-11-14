@@ -1,18 +1,27 @@
 package com.example.myproject.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class Student {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private int age;
 
-    // Конструктор
+    // Конструктор, геттеры и сеттеры
+    public Student() {}
+
     public Student(Long id, String name, int age) {
         this.id = id;
         this.name = name;
         this.age = age;
     }
 
-    // Геттеры и сеттеры
     public Long getId() {
         return id;
     }
