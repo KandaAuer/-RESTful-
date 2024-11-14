@@ -1,16 +1,20 @@
 package com.example.myproject.model;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Student {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
     private int age;
 
-    // Конструктор
-    public Student(Long id, String name, int age) {
-        this.id = id;
-        this.name = name;
-        this.age = age;
-    }
+    @OneToOne(mappedBy = "student")
+    private Avatar avatar;
 
     // Геттеры и сеттеры
     public Long getId() {
@@ -35,5 +39,13 @@ public class Student {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public Avatar getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(Avatar avatar) {
+        this.avatar = avatar;
     }
 }
