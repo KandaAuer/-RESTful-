@@ -1,50 +1,49 @@
 package com.example.myproject.service;
 
 import com.example.myproject.model.Student;
+import com.example.myproject.repository.StudentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.Optional;
 
+@Service
 public class StudentService {
-    private Map<Long, Student> studentMap = new HashMap<>();
-    private Long idCounter = 1L;
+    private final StudentRepository studentRepository;
 
-    // CRUD-операции
-
-    public Student createStudent(String name, int age) {
-        Student student = new Student(idCounter++, name, age);
-        studentMap.put(student.getId(), student);
-        return student;
+    @Autowired
+    public StudentService(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
     }
 
-    public Student getStudent(Long id) {
-        return studentMap.get(id);
+    public Student createStudent(String name, int age) {
+        Student student = new Student();
+        student.setName(name);
+        student.setAge(age);
+        return studentRepository.save(student);
+    }
+
+    public Optional<Student> getStudent(Long id) {
+        return studentRepository.findById(id);
     }
 
     public Student updateStudent(Long id, String name, int age) {
-        Student student = studentMap.get(id);
-        if (student != null) {
-            student.setName(name);
-            student.setAge(age);
-        }
-        return student;
+        Student student = studentRepository.findById(id).orElseThrow();
+        student.setName(name);
+        student.setAge(age);
+        return studentRepository.save(student);
     }
 
     public void deleteStudent(Long id) {
-        studentMap.remove(id);
+        studentRepository.deleteById(id);
     }
 
-    public Map<Long, Student> getAllStudents() {
-        return studentMap;
+    public List<Student> getAllStudents() {
+        return studentRepository.findAll();
     }
 
-    public Map<Long, Student> filterStudentsByAge(int age) {
-        Map<Long, Student> filtered = new HashMap<>();
-        for (Student student : studentMap.values()) {
-            if (student.getAge() == age) {
-                filtered.put(student.getId(), student);
-            }
-        }
-        return filtered;
+    public List<Student> filterStudentsByAge(int age) {
+        return studentRepository.findByAge(age);
     }
 }

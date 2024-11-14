@@ -1,50 +1,49 @@
 package com.example.myproject.service;
 
 import com.example.myproject.model.Faculty;
+import com.example.myproject.repository.FacultyRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.Optional;
 
+@Service
 public class FacultyService {
-    private Map<Long, Faculty> facultyMap = new HashMap<>();
-    private Long idCounter = 1L;
+    private final FacultyRepository facultyRepository;
 
-    // CRUD-операции
-
-    public Faculty createFaculty(String name, String color) {
-        Faculty faculty = new Faculty(idCounter++, name, color);
-        facultyMap.put(faculty.getId(), faculty);
-        return faculty;
+    @Autowired
+    public FacultyService(FacultyRepository facultyRepository) {
+        this.facultyRepository = facultyRepository;
     }
 
-    public Faculty getFaculty(Long id) {
-        return facultyMap.get(id);
+    public Faculty createFaculty(String name, String color) {
+        Faculty faculty = new Faculty();
+        faculty.setName(name);
+        faculty.setColor(color);
+        return facultyRepository.save(faculty);
+    }
+
+    public Optional<Faculty> getFaculty(Long id) {
+        return facultyRepository.findById(id);
     }
 
     public Faculty updateFaculty(Long id, String name, String color) {
-        Faculty faculty = facultyMap.get(id);
-        if (faculty != null) {
-            faculty.setName(name);
-            faculty.setColor(color);
-        }
-        return faculty;
+        Faculty faculty = facultyRepository.findById(id).orElseThrow();
+        faculty.setName(name);
+        faculty.setColor(color);
+        return facultyRepository.save(faculty);
     }
 
     public void deleteFaculty(Long id) {
-        facultyMap.remove(id);
+        facultyRepository.deleteById(id);
     }
 
-    public Map<Long, Faculty> getAllFaculties() {
-        return facultyMap;
+    public List<Faculty> getAllFaculties() {
+        return facultyRepository.findAll();
     }
 
-    public Map<Long, Faculty> filterFacultiesByColor(String color) {
-        Map<Long, Faculty> filtered = new HashMap<>();
-        for (Faculty faculty : facultyMap.values()) {
-            if (faculty.getColor().equalsIgnoreCase(color)) {
-                filtered.put(faculty.getId(), faculty);
-            }
-        }
-        return filtered;
+    public List<Faculty> filterFacultiesByColor(String color) {
+        return facultyRepository.findByColor(color);
     }
 }
