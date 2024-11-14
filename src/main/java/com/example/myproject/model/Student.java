@@ -7,24 +7,14 @@ public class Student {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;  // Идентификатор студента
+    private Long id;
 
-    private String name;  // Имя студента
-    private int age;      // Возраст студента
+    private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "faculty_id")  // Связь ManyToOne с факультетом
-    private Faculty faculty;  // Ссылка на факультет, к которому принадлежит студент
+    private int age;
 
-    // Конструктор по умолчанию
-    public Student() {}
-
-    // Конструктор с параметрами
-    public Student(String name, int age, Faculty faculty) {
-        this.name = name;
-        this.age = age;
-        this.faculty = faculty;
-    }
+    @OneToOne(mappedBy = "student")
+    private Avatar avatar;
 
     // Геттеры и сеттеры
     public Long getId() {
@@ -51,11 +41,11 @@ public class Student {
         this.age = age;
     }
 
-    public Faculty getFaculty() {
-        return faculty;
+    public Avatar getAvatar() {
+        return avatar;
     }
 
-    public void setFaculty(Faculty faculty) {
-        this.faculty = faculty;
+    public void setAvatar(Avatar avatar) {
+        this.avatar = avatar;
     }
 }
