@@ -1,60 +1,45 @@
 package com.example.myproject.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.List;
 
 @Entity
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Faculty {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;   // Название факультета
-    private String color;  // Цвет факультета
+    @NotBlank
+    @Size(max = 255)
+    private String name;
 
-    @OneToMany(mappedBy = "faculty", fetch = FetchType.LAZY)
-    private List<Student> students; // Список студентов, относящихся к этому факультету
+    @Column(length = 500)
+    private String description;
 
-    // Конструктор по умолчанию
-    public Faculty() {}
+    @Column(nullable = true)
+    private String logoPath;
 
-    // Конструктор с параметрами
-    public Faculty(String name, String color) {
-        this.name = name;
-        this.color = color;
+    @OneToMany(mappedBy = "faculty", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Student> students;
+
+    public Faculty(long l, String updatedFaculty) {
     }
 
-    // Геттеры и сеттеры
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public Faculty(Long o, String newFaculty) {
     }
 
     public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    public List<Student> getStudents() {
-        return students;
-    }
-
-    public void setStudents(List<Student> students) {
-        this.students = students;
+        return null;
     }
 }
